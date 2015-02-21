@@ -135,11 +135,11 @@ Data Used in this study is found in several different sources:
 After unzipping the file (The script does this automatically) the following files and directories are created in your working Directory:
 
 Working Directory
-		- UCI HAR Dataset
-		------------------
-		FILE: 'activity_labels.txt' - File contains the activities that are translated from numeric values found in datasets
-		FILE: 'features.txt' - File contains the column names for each numeric measurement found in datasets
-		FILE: 'features_info.txt' - NOT USED IN ANALYSIS File contains the descritpion of column names 
+			- UCI HAR Dataset
+			------------------
+			FILE: 'activity_labels.txt' - File contains the activities that are translated from numeric values found in datasets
+			FILE: 'features.txt' - File contains the column names for each numeric measurement found in datasets
+			FILE: 'features_info.txt' - NOT USED IN ANALYSIS File contains the descritpion of column names 
 
 			- test Directory
 			--------------------
