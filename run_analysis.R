@@ -24,8 +24,8 @@ library(reshape2)
 
 #Replace current location to set working directory for the study.
 
-#setwd("C:\\Users\\Wes\\Documents\\RWorkingDirectory\\CleaningData\\")
-#getwd()
+setwd("C:\\Users\\Wes\\Documents\\RWorkingDirectory\\CleaningData\\")
+getwd()
 
 # If Study Directory does not exist - considers this a first time run and will create a directory for the 
 #       study as well as download the zip file from the site and unzip creating the required directory structure.
@@ -35,10 +35,13 @@ if (!file.exists("ProjectWork"))
   zipFile <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip "
   download.file(zipFile,"ProjectDataset.zip", mode="wb")
   unzip("ProjectDataset.zip")
+}else
+{
+        setwd(".\\ProjectWork\\")
+        getwd()
 }
 
-setwd(".\\ProjectWork\\")
-getwd()
+
 
 setwd(".\\UCI HAR Dataset\\")
 getwd()
@@ -176,7 +179,6 @@ Y_Desc_List <- StudyActivities[as.factor(Y_DataActionList)]
 #Load Data from Train Data X set into data.frame
 #------------------------------------------------
 
-
 currFile <- "X_train.txt"
 con <- file(currFile)
 open(con)
@@ -188,10 +190,6 @@ close(con)
 
 
 X_Data_TrainSplit <- separate(X_Data_Train, V1, titles$V2, sep=cols,remove = TRUE,colClasses = "numeric")
-
-
-
-
 
 
 #Load Data from Train Data subject_test into data.frame
@@ -208,11 +206,6 @@ close(con)
 #----------------------------------------------------------------------------------------------------
 Data_Source <- rep("Train_Data",7352)
 MasterTrainData <- cbind(Subject,Y_Desc_List,X_Data_TrainSplit,Data_Source)
-
-
-
-# do not clear - this is master for the next step!
-#MasterTrainData <- cbind(Y_Desc_List,X_Data_TrainSplit,Data_Source)
 
 #housekeeping - clear Data.frames no longer used:
 X_Data_Train <- NULL
@@ -295,5 +288,6 @@ HumanActRecogData <- NULL
 
 #Write Tidy Data to Disk
 setwd("..")
-getwd()
-write.table(Tidy_HumanActivityRecog,"Tidy_HumanActivityRecog.csv", sep = ",", row.names = FALSE)
+#getwd()
+#write.table(Tidy_HumanActivityRecog,"Tidy_HumanActivityRecog.csv", sep = ",", row.names = FALSE)
+
