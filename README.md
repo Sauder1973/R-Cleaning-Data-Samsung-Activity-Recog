@@ -1,25 +1,18 @@
 # R Cleaning Data Samsung Activity Recog <h1> 
 ##   Repository for Cleaning Data Coursera Project  <h2> 
 
-#### This repository contains R script that does the following:
-       1 Merges the training and the test sets to create one data set.
-          (Source Data found at: https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip 
-       2 Extracts only the measurements on the mean and standard deviation for each measurement. 
-       3 Uses descriptive activity names to name the activities in the data set
-       4 Appropriately labels the data set with descriptive variable names. 
-       5 From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each               activity and each subject. <h4> 
+#### This repository contains R script that does the following:<h4>
+1 Merges the training and the test sets to create one data set. Source Data found at: https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip 
+2 Extracts only the measurements on the mean and standard deviation for each measurement. 
+3 Uses descriptive activity names to name the activities in the data set
+4 Appropriately labels the data set with descriptive variable names. 
+5 From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.  
        
-#### Project Description: 
-       One of the most exciting areas in all of data science right now is wearable computing - 
-	   see for example this article . Companies like Fitbit, Nike, and Jawbone Up are racing 
-	   to develop the most advanced algorithms to attract new users. The data linked to from 
-	   the course website represent data collected from the accelerometers from the 
-	   Samsung Galaxy S smartphone. A full description is available at the site where the data was obtained: 
-
-    http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones <h4> 
+#### Project Description: <h4>
+One of the most exciting areas in all of data science right now is wearable computing - see for example this article . Companies like Fitbit, Nike, and Jawbone Up are racing to develop the most advanced algorithms to attract new users. The data linked to from the course website represent data collected from the accelerometers from the Samsung Galaxy S smartphone. A full description is available at the site where the data was obtained: http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones  
 
 
-##In order to clean the data repeatably and make it easy to audit, the script follows specific tasks: <h2> 
+####In order to clean the data repeatably and make it easy to audit, the script follows specific tasks: <h4> 
 
 1. Define the Library's required - dplyr, data.table, tidyr and reshape2 - ensure you have them install in your R environment
 2. Set your WD in order to start the study.  IMPORTANT: A proper working Directory is required to ensure you create a clean starting point.
