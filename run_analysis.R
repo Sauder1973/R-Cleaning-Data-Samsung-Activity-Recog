@@ -1,7 +1,6 @@
-
-
-# run_analysis.R
-
+#------------------------------------------------------------------------------------------------------------
+# R Script:  run_analysis.R
+#------------------------------------------------------------------------------------------------------------
 #  Written By: W. Sauder Feb 19 2015
 #  R script that does the following: 
 #       1 Merges the training and the test sets to create one data set.
@@ -10,14 +9,12 @@
 #       4 Appropriately labels the data set with descriptive variable names. 
 #       5 From the data set in step 4, creates a second, independent tidy data 
 #               set with the average of each variable for each activity and each subject.
-
+#------------------------------------------------------------------------------------------------------------
 
 library(dplyr)
 library(data.table)
 library(tidyr)
 library(reshape2)
-
-
 
 # PREWORK: Download File and UnZip to Current Working Directory
 #-------------------------------------------------------------------------------------------------------------
@@ -41,14 +38,10 @@ if (!file.exists("ProjectWork"))
         getwd()
 }
 
-
-
 setwd(".\\UCI HAR Dataset\\")
 getwd()
 testDir <- ".\\test"
 trainDir <- ".\\train\\"
-
-
 
 #Obtain Titles of The Files
 #--------------------------------------------------------------------------------------------------------------
@@ -67,15 +60,9 @@ CompleteTitles <- as.vector(titles$V2)  #Use this to Label Raw Data
 
 #Determine Columns that are acceptable to use for the tidy data set
 #--------------------------------------------------------------------------------------------------------------
-
-
 ValidColumns <- filter(titles, grepl('mean()|std()',V2))
-
 ValidColumns <- filter(ValidColumns, !grepl('meanFreq()',V2))
 ValidColumns <- as.vector(ValidColumns$V2)
-
-
-
 ValidColumns <- c("Measured_Subject", "Y_Desc_List",ValidColumns,"Data_Source")
 
 
@@ -144,13 +131,6 @@ MasterTestData <- cbind(Subject,Y_Desc_List,X_Data_TestSplit,Data_Source)
         Y_Data <- NULL
         Y_DataActionList = NULL
 
-
-#USE BELOW CODE TO VALIDATE 
-#test output - WRITE TEST DATA TO FILE
-#write.table(X_Data_Test,"X_Data_Test.csv", sep = ",", row.names = FALSE)
-#write.table(X_Data_TestSplit,"X_Data_TestSplit.csv", sep = ",", row.names = FALSE)
-#write.table(MasterTestData,"MasterTestDataSample.csv", sep = ",", row.names = FALSE)
-#--------------------------------------------------------------------------
 
 
 #Load Data from Train Data set into data.frame
@@ -232,10 +212,7 @@ MasterTrainData <- NULL
 Index <- CompleteDF[ ,which(names(CompleteDF) %in% ValidColumns)]
 
 HumanActRecogData <- subset(CompleteDF, select=Index)
-#Change Name of Second Column to Activity
 
-
-#write.table(HumanActivityRecognitionData,"TidyDataSet_Pt1_Master.csv", sep = ",")
 
 #housekeeping - clear Data.frames no longer used:
 CompleteDF <- NULL
@@ -255,8 +232,6 @@ HumanActRecogData <- HumanActRecogData[with(HumanActRecogData,order(Activity,Mea
 ValidColumnsCorrected <- gsub("\\(|\\)", "", ValidColumns)
 ValidColumnsCorrected <- gsub("\\-", "_", ValidColumnsCorrected)
 SummaryTitles <- ValidColumnsCorrected[3:68]
-
-
 
 colnames(HumanActRecogData) <- ValidColumnsCorrected
 
@@ -288,6 +263,5 @@ HumanActRecogData <- NULL
 
 #Write Tidy Data to Disk
 setwd("..")
-#getwd()
-#write.table(Tidy_HumanActivityRecog,"Tidy_HumanActivityRecog.csv", sep = ",", row.names = FALSE)
+write.table(Tidy_HumanActivityRecog,"Tidy_HumanActivityRecog.txt", sep = "  ", row.names = FALSE,quote=FALSE)
 

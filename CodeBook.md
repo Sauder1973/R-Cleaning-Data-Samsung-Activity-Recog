@@ -153,12 +153,29 @@ Working Directory
 			FILE: 'X_train.txt' - File contains the raw data with all measurements for Test Dataset.  Numeric Fixed Width Format
 			FILE: 'y_train.txt - File contains the activities measured by row or observation.  Single value 1 to 6 for each row.
 
-Transformations or work that you performed to clean up the data
 
-To Clean up the data, I did the following:
+Transformations to clean up and present the data
+-------------------------------------------------------------------------------------------------------------------	
 
-1. Merged the test data with subject and activity
-2. Merged the train data with subject and activity
-3. Merge the consolidated test and train data
-4. Subset to fetch the required columns.
-5. Tidy up the data by subject and activity to calculate the means
+In order to clean the data repeatably and make it easy to audit, the script follows specific tasks:
+
+1. Define the Library's required - dplyr, data.table, tidyr and reshape2 - ensure you have them install in your R environment
+2. Set your WD in order to start the study.  IMPORTANT: A proper working Directory is required to ensure you create a clean starting point.
+3. Check if the standard working directory created by study exists - 'ProjectWork', if it does not exist, make the directory and sets the working directory
+4. If the 'ProjectWork' directory didn't exist, download the dataset from 
+"https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip " and unzip.
+5. Pull data used globally in study - Column Titles, Activity Names
+6. Filter Column Names and create vector with required columns in tidy dataset (mean and std)
+7. Load Test Data for X and Y
+8. Split Data after its loaded into columns (Fixed Width - 16 Characters)
+9. Merged the test data with subject and activity
+10. Rename data.frame names to provide the appropriate labels
+11. Housekeeping to remove data.frames no longer used
+12. Repeat from Step 7 for Train Data
+13. Merge the consolidated test and train data
+14. Subset to using the Filtered Column Names to obtain the required columns.
+15. Convert Measurement columns into numeric in order to perform math.
+16. Convert data to 'long' format using melt
+17. Tidy up the data by subject and activity to calculate the means
+18. Housekeeping to remove data.frames no longer used
+18. Save the output to .txt file without quotes and a blank delimited format
