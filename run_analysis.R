@@ -1,5 +1,4 @@
-setwd("C:\\Users\\Wes\\Documents\\RWorkingDirectory\\CleaningData\\")
-getwd()
+
 
 # run_analysis.R
 
@@ -12,12 +11,10 @@ getwd()
 #       5 From the data set in step 4, creates a second, independent tidy data 
 #               set with the average of each variable for each activity and each subject.
 
-#library(sqldf)
+
 library(dplyr)
 library(data.table)
 library(tidyr)
-#library(reshape)
-#library(plyr)
 library(reshape2)
 
 
@@ -25,6 +22,13 @@ library(reshape2)
 # PREWORK: Download File and UnZip to Current Working Directory
 #-------------------------------------------------------------------------------------------------------------
 
+#Replace current location to set working directory for the study.
+
+#setwd("C:\\Users\\Wes\\Documents\\RWorkingDirectory\\CleaningData\\")
+#getwd()
+
+# If Study Directory does not exist - considers this a first time run and will create a directory for the 
+#       study as well as download the zip file from the site and unzip creating the required directory structure.
 if (!file.exists("ProjectWork"))
 { dir.create("ProjectWork")
   getwd()
@@ -35,8 +39,6 @@ if (!file.exists("ProjectWork"))
 
 setwd(".\\ProjectWork\\")
 getwd()
-
-
 
 setwd(".\\UCI HAR Dataset\\")
 getwd()
@@ -142,9 +144,9 @@ MasterTestData <- cbind(Subject,Y_Desc_List,X_Data_TestSplit,Data_Source)
 
 #USE BELOW CODE TO VALIDATE 
 #test output - WRITE TEST DATA TO FILE
-#write.table(X_Data_Test,"X_Data_Test.csv", sep = ",")
-#write.table(X_Data_TestSplit,"X_Data_TestSplit.csv", sep = ",")
-#write.table(MasterTestData,"MasterTestDataSample.csv", sep = ",")
+#write.table(X_Data_Test,"X_Data_Test.csv", sep = ",", row.names = FALSE)
+#write.table(X_Data_TestSplit,"X_Data_TestSplit.csv", sep = ",", row.names = FALSE)
+#write.table(MasterTestData,"MasterTestDataSample.csv", sep = ",", row.names = FALSE)
 #--------------------------------------------------------------------------
 
 
@@ -294,4 +296,4 @@ HumanActRecogData <- NULL
 #Write Tidy Data to Disk
 setwd("..")
 getwd()
-write.table(Tidy_HumanActivityRecog,"Tidy_HumanActivityRecog.csv", sep = ",")
+write.table(Tidy_HumanActivityRecog,"Tidy_HumanActivityRecog.csv", sep = ",", row.names = FALSE)
