@@ -12,10 +12,13 @@ getwd()
 #       5 From the data set in step 4, creates a second, independent tidy data 
 #               set with the average of each variable for each activity and each subject.
 
-library(sqldf)
+#library(sqldf)
 library(dplyr)
 library(data.table)
 library(tidyr)
+#library(reshape)
+#library(plyr)
+library(reshape2)
 
 
 
@@ -66,7 +69,9 @@ ValidColumns <- filter(titles, grepl('mean()|std()',V2))
 ValidColumns <- filter(ValidColumns, !grepl('meanFreq()',V2))
 ValidColumns <- as.vector(ValidColumns$V2)
 
-ValidColumns <- c("Subject", "Y_Desc_List",ValidColumns,"Data_Source")
+
+
+ValidColumns <- c("Measured_Subject", "Y_Desc_List",ValidColumns,"Data_Source")
 
 
 #Obtain Activities List
@@ -106,11 +111,11 @@ con <- file(currFile)
 open(con)
 cols <-c(1:560)*16
 
-
+#X_Data_Test <- fread(currFile, header = FALSE, sep="\n")
 X_Data_Test <- fread(currFile, header = FALSE, sep="\n")
 close(con)
 
-X_Data_TestSplit <- separate(X_Data_Test, V1, titles$V2, sep=cols,remove = TRUE)
+X_Data_TestSplit <- separate(X_Data_Test, V1, titles$V2, sep=cols,remove = TRUE,colClasses = "numeric")
 
 Data_Source <- rep("Test_Data",2947)
 
@@ -122,7 +127,7 @@ con <- file(currFile)
 open(con)
 
 Subject <-  fread(currFile, header = FALSE, sep="\n")
-
+close(con)
 
 # do not clear - this is master for the next step!
 #----------------------------------------------------------------------------------------------------
@@ -180,12 +185,12 @@ X_Data_Train <- fread(currFile, header = FALSE, sep="\n")
 close(con)
 
 
-X_Data_TrainSplit <- separate(X_Data_Train, V1, titles$V2, sep=cols,remove = TRUE)
-
-Data_Source <- rep("Test_Data",7352)
+X_Data_TrainSplit <- separate(X_Data_Train, V1, titles$V2, sep=cols,remove = TRUE,colClasses = "numeric")
 
 
-Data_Source <- rep("Test_Data",2947)
+
+
+
 
 #Load Data from Train Data subject_test into data.frame
 #------------------------------------------------
@@ -196,9 +201,10 @@ open(con)
 
 Subject <-  fread(currFile, header = FALSE, sep="\n")
 
-
+close(con)
 # do not clear - this is master for the next step!
 #----------------------------------------------------------------------------------------------------
+Data_Source <- rep("Train_Data",7352)
 MasterTrainData <- cbind(Subject,Y_Desc_List,X_Data_TrainSplit,Data_Source)
 
 
@@ -217,8 +223,8 @@ Y_DataActionList = NULL
 #--------------------------------------------------------------------------------------------------------------
 CompleteDF <- rbind(MasterTestData,MasterTrainData)
 
-#Change Name of First Column to Subject
-setnames(CompleteDF,"V1", "Subject")
+#Change Name of First Column to Measured_Subject
+setnames(CompleteDF,"V1", "Measured_Subject")
 
 #housekeeping - clear Data.frames no longer used:
 MasterTestData <- NULL
@@ -230,14 +236,62 @@ MasterTrainData <- NULL
 
 Index <- CompleteDF[ ,which(names(CompleteDF) %in% ValidColumns)]
 
-HumanActivityRecognitionData <- subset(CompleteDF, select=Index)
-#Change Name of First Column to Subject
-setnames(HumanActivityRecognitionData,"Y_Desc_List", "Activity")
+HumanActRecogData <- subset(CompleteDF, select=Index)
+#Change Name of Second Column to Activity
 
 
-#HumanActivityRecognitionData <- CompleteDF[,Index]#
-#
-#HumanActivityRecognitionData <- CompleteDF[,ValidColumns(CompleteDF)%in%ValidColumns] 
-#HumanActivityRecognitionData <- select(CompleteDF,ValidColumns)
+#write.table(HumanActivityRecognitionData,"TidyDataSet_Pt1_Master.csv", sep = ",")
+
+#housekeeping - clear Data.frames no longer used:
+CompleteDF <- NULL
+Subject <- NULL
+titles <- NULL
+activities = NULL
+
+#Part Two - Tidy Data Set Summary
+#--------------------------------------------------------------------------------------------------------------
+# From the data set in step 4, creates a second, independent tidy data set with the average of 
+#each variable for each activity and each subject.
+#--------------------------------------------------------------------------------------------------------------
+setnames(HumanActRecogData,"Y_Desc_List", "Activity")
+HumanActRecogData <- HumanActRecogData[with(HumanActRecogData,order(Activity,Measured_Subject)),]
 
 
+ValidColumnsCorrected <- gsub("\\(|\\)", "", ValidColumns)
+ValidColumnsCorrected <- gsub("\\-", "_", ValidColumnsCorrected)
+SummaryTitles <- ValidColumnsCorrected[3:68]
+
+
+
+colnames(HumanActRecogData) <- ValidColumnsCorrected
+
+HumanActRecogData <- subset(HumanActRecogData, select = -Data_Source)
+
+# Set Subject as Key
+setkey(HumanActRecogData,"Measured_Subject")
+
+#Convert Character to Numeric
+for (x in SummaryTitles){
+        HumanActRecogData[[x]]<-as.numeric(HumanActRecogData[[x]])
+        }
+
+
+#Build Clean DataSet
+#-----------------------------------------------------------------------------------
+#Melt Data - Long Format Table - One measurement by subject and activity per line
+setnames(HumanActRecogData,"Y_Desc_List", "Activity")
+Melted_HARD <- melt(HumanActRecogData, id=c("Measured_Subject","Activity"), measured=SummaryTitles)
+
+#Summarize Data - Calculate Mean for Variables Long Format Table - One measurement by subject and activity per line
+Tidy_HumanActivityRecog <- ddply(Melted_HARD, c("Measured_Subject", "Activity", "variable"), summarise,
+      mean = mean(value))
+setnames(Tidy_HumanActivityRecog,"variable", "Measurement")
+
+#housekeeping - clear Data.frames no longer used:
+Melted_HARD <- NULL
+HumanActRecogData <- NULL
+
+#Write Tidy Data to Disk
+setwd("..")
+getwd()
+write.table(Tidy_HumanActivityRecog,"Tidy_HumanActivityRecog.csv", sep = ",")

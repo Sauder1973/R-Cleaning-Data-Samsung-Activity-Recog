@@ -154,3 +154,11 @@ Working Directory
 			FILE: 'y_train.txt - File contains the activities measured by row or observation.  Single value 1 to 6 for each row.
 
 Transformations or work that you performed to clean up the data
+
+To Clean up the data, I did the following:
+
+1. Merged the test data with subject and activity
+2. Merged the train data with subject and activity
+3. Merge the consolidated test and train data
+4. Subset to fetch the required columns.
+5. Tidy up the data by subject and activity to calculate the means
